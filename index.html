@@ -75,6 +75,12 @@ nav{padding:20px 24px;display:flex;justify-content:space-between;align-items:cen
 .paywall-feature::before{content:'→';color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px;flex-shrink:0;margin-top:2px}
 .price-tag{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--amber);margin-bottom:4px}
 .price-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:20px}
+.lead-form{display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto 20px}
+.lead-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--white);font-family:'Lora',serif;font-size:15px;padding:13px 16px;outline:none;transition:border-color 0.2s}
+.lead-input:focus{border-color:var(--amber)}
+.lead-input::placeholder{color:var(--text-faint)}
+.lead-confirm{display:none;padding:16px 20px;border:1px solid var(--amber-dim);background:rgba(212,160,23,0.06);margin-top:16px}
+.lead-confirm p{font-size:13px;color:var(--amber);font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;line-height:1.6}
 footer{padding:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .footer-copy{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0.06em}
 @media(max-width:640px){.insights-grid{grid-template-columns:1fr}.hero-meta{gap:18px}.question-block{padding:16px}}
@@ -390,12 +396,18 @@ footer{padding:24px;border-top:1px solid var(--border);display:flex;justify-cont
           <div class="paywall-feature">GDPR and UK compliance notes for any tools recommended</div>
         </div>
         <div class="price-tag">£39</div>
-        <div class="price-sub">One-time payment — instant report</div>
-        <a href="https://usmannautomates.gumroad.com/l/phesm" target="_blank" class="btn-primary" onclick="saveAnswersBeforePayment()">
-          Get Full Report — £39
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
-        </a>
-        <p style="font-size:13px;color:var(--text-dim);margin-top:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em">After payment, email <span style="color:var(--amber)">usmann@usmannautomates.co.uk</span> with your name and we will send your full personalised report within 24 hours.</p>
+        <div class="price-sub">One-time payment — report delivered within 24 hours</div>
+        <div class="lead-form" id="lead-form">
+          <input type="text" class="lead-input" id="lead-name" placeholder="Your name or business name" maxlength="100">
+          <input type="email" class="lead-input" id="lead-email" placeholder="Your email address">
+          <button class="btn-primary" id="get-report-btn" onclick="submitAndRedirect()" style="width:100%;justify-content:center">
+            Get My Full Report — £39
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+          </button>
+        </div>
+        <div class="lead-confirm" id="lead-confirm">
+          <p>✓ Details received — opening payment page now.<br><br>After payment, your personalised report will be emailed to you within 24 hours. Check your spam folder if you do not see it.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -467,7 +479,7 @@ function generateScore(){
   document.getElementById('progress-wrap').style.display='none';
   window.scrollTo({top:0,behavior:'smooth'});
   const circ=339.3;
-  const offset=circ-(score/100)*circ;
+  const offset=circ-((score/100)*circ);
   setTimeout(()=>{
     const c=document.getElementById('score-circle');
     c.style.transition='stroke-dashoffset 1.5s ease';
@@ -494,104 +506,51 @@ function generateScore(){
   sessionStorage.setItem('audit_score',score);
 }
 
-function saveAnswersBeforePayment(){
-  sessionStorage.setItem('audit_answers',JSON.stringify(getAnswers()));
-  sessionStorage.setItem('audit_score',calculateScore());
-}
-
-  const prompt=`You are UsmannAutomates, a UK business automation specialist. Write a personalised automation audit report for a UK small business owner based on their answers.
-
-BUSINESS PROFILE:
-- Type: ${a.q1_text||'Not specified'}
-- Team size: ${a.q2_text||'Not specified'}
-- Revenue: ${a.q3_text||'Not specified'}
-- Automation score: ${score}%
-
-CURRENT TOOLS:
-- Client records: ${a.q4_text||'Not specified'}
-- Invoicing: ${a.q5_text||'Not specified'}
-- Project management: ${a.q6_text||'Not specified'}
-
-MANUAL WORK:
-- Weekly admin hours: ${a.q7_text||'Not specified'}
-- Biggest time drains: ${Array.isArray(a.q8)?a.q8.join(', '):'None selected'}
-- Process documentation: ${a.q9_text||'Not specified'}
-
-COMMUNICATION:
-- Lead follow-up: ${a.q10_text||'Not specified'}
-- Proposals: ${a.q11_text||'Not specified'}
-- Onboarding: ${a.q12_text||'Not specified'}
-
-DATA AND PERFORMANCE:
-- Performance tracking: ${a.q13_text||'Not specified'}
-- Profitability visibility: ${a.q14_text||'Not specified'}
-- Tech comfort: ${a.q15_text||'Not specified'}
-
-Write a detailed personalised report with these sections:
-
-## Executive Summary
-2-3 paragraphs. Summarise their automation maturity, the biggest opportunities specific to their business type and size, and the overall value available.
-
-## Your Top 5 Automation Opportunities
-For each (numbered, ranked by impact):
-### [Opportunity Name]
-Explain the current problem, what to automate, specific UK-relevant tool recommendations with GBP pricing, realistic hours saved per week, difficulty (Easy/Medium/Hard), and rough monthly cost.
-
-## Your 90-Day Implementation Roadmap
-### Month 1 — Quick Wins
-2-3 specific actions with exact tools to set up first.
-### Month 2 — Core Automation
-2-3 actions building on Month 1.
-### Month 3 — Advanced Optimisation
-2-3 actions for connecting systems.
-
-## Recommended Tool Stack
-Grouped by category (CRM, Invoicing, Projects, Communication, Reporting). For each: tool name, monthly cost in GBP, why it fits their specific situation.
-
-## UK Compliance Notes
-Practical GDPR and ICO considerations for the recommended tools. Keep it specific and actionable.
-
-## Return on Investment Estimate
-Calculate: estimated weekly hours currently lost, hours saved after recommendations, annual value at £25/hour, approximate tool costs per month, net annual benefit.
-
-Write in plain direct English. No jargon. No filler. Be specific to their business type and size throughout. Reference their actual answers where relevant.`;
-
+async function submitAndRedirect(){
+  const name=document.getElementById('lead-name').value.trim();
+  const email=document.getElementById('lead-email').value.trim();
+  if(!name){alert('Please enter your name or business name.');return;}
+  if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
+  const btn=document.getElementById('get-report-btn');
+  btn.disabled=true;
+  btn.textContent='Sending...';
+  const answers=JSON.parse(sessionStorage.getItem('audit_answers')||'{}');
+  const score=sessionStorage.getItem('audit_score')||'?';
+  const formData={
+    name:name,
+    email:email,
+    score:score+'%',
+    business_type:answers.q1_text||'Not specified',
+    team_size:answers.q2_text||'Not specified',
+    revenue:answers.q3_text||'Not specified',
+    crm:answers.q4_text||'Not specified',
+    invoicing:answers.q5_text||'Not specified',
+    projects:answers.q6_text||'Not specified',
+    admin_hours:answers.q7_text||'Not specified',
+    time_drains:Array.isArray(answers.q8)?answers.q8.join(', '):'None',
+    documentation:answers.q9_text||'Not specified',
+    lead_followup:answers.q10_text||'Not specified',
+    proposals:answers.q11_text||'Not specified',
+    onboarding:answers.q12_text||'Not specified',
+    performance_tracking:answers.q13_text||'Not specified',
+    profitability:answers.q14_text||'Not specified',
+    tech_comfort:answers.q15_text||'Not specified'
+  };
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    await fetch('https://formspree.io/f/mnjldblv',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(formData)
     });
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error');}
-    const data=await res.json();
-    const text=data.content[0].text;
-    document.getElementById('report-loading').style.display='none';
-    const hdr=document.createElement('div');
-    hdr.className='report-header';
-    hdr.innerHTML='<h2>Your Personalised Automation Report</h2><p class="report-meta">Score: '+score+'% &middot; '+a.q1_text+' &middot; '+a.q2_text+' &middot; Generated by UsmannAutomates</p>';
-    document.getElementById('report-content').appendChild(hdr);
-    const body=document.createElement('div');
-    body.className='report-body';
-    body.innerHTML=formatReport(text);
-    document.getElementById('report-content').appendChild(body);
-    const cta=document.createElement('div');
-    cta.style.cssText='margin-top:28px;padding:22px;border:1px solid var(--border);background:var(--surface)';
-    cta.innerHTML='<p style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">Want help implementing this?</p><p style="font-size:14px;color:var(--text-dim);margin-bottom:14px">Usmann Asghar at UsmannAutomates helps UK small businesses implement exactly these automations.</p><a href="https://usmannautomates.co.uk#contact" style="display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:var(--black);font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:13px 22px">Get in Touch →</a>';
-    document.getElementById('report-content').appendChild(cta);
-  }catch(err){
-    document.getElementById('report-loading').style.display='none';
-    document.getElementById('report-content').innerHTML='<div style="padding:22px;border:1px solid var(--border);background:var(--surface)"><p style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#e24b4a;margin-bottom:8px">Error generating report</p><p style="font-size:14px;color:var(--text-dim)">'+err.message+'</p><button onclick="generateFullReport()" style="margin-top:14px;background:var(--amber);color:var(--black);font-family:\'IBM Plex Mono\',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:12px 18px;cursor:pointer">Try Again</button></div>';
+  }catch(e){
+    console.log('Formspree error:',e);
   }
+  document.getElementById('lead-form').style.display='none';
+  document.getElementById('lead-confirm').style.display='block';
+  setTimeout(()=>{
+    window.open('https://usmannautomates.gumroad.com/l/phesm','_blank');
+  },1200);
 }
-
-window.addEventListener('load',()=>{
-  if(new URLSearchParams(window.location.search).get('paid')==='true'&&sessionStorage.getItem('audit_answers')){
-    document.getElementById('form-section').style.display='none';
-    const a=JSON.parse(sessionStorage.getItem('audit_answers'));
-    document.getElementById('score-section').style.display='block';
-    showReportSection();
-  }
-});
 </script>
 </body>
 </html>
