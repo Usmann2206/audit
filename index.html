@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK SME Automation Audit | UsmannAutomates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a09;--surface:#111110;--surface2:#1a1a18;--border:#2a2a27;--amber:#d4a017;--amber-dim:#a37c10;--text:#e8e6df;--text-dim:#8a8880;--text-faint:#4a4a47;--white:#f5f3ee}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:'Lora',Georgia,serif;font-size:16px;line-height:1.7;overflow-x:hidden;min-height:100vh}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;font-weight:800;line-height:1.1;letter-spacing:-0.02em}
+.container{max-width:860px;margin:0 auto;padding:0 24px}
+nav{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--black)}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--amber);letter-spacing:0.1em;text-decoration:none;text-transform:uppercase}
+.nav-back{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s}
+.nav-back:hover{color:var(--amber)}
+.hero{padding:60px 0 48px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(212,160,23,0.04) 0%,transparent 100%)}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:24px}
+.hero-tag::before,.hero-tag::after{content:'';width:24px;height:1px;background:var(--amber)}
+.hero h1{font-size:clamp(30px,5vw,52px);color:var(--white);margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero-sub{font-size:16px;color:var(--text-dim);max-width:560px;margin:0 auto 32px;line-height:1.8}
+.hero-meta{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.hero-meta-item .num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--amber)}
+.hero-meta-item .lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-faint)}
+.progress-wrap{padding:16px 0;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,9,0.95);backdrop-filter:blur(8px);z-index:10;display:none}
+.progress-inner{display:flex;align-items:center;gap:16px}
+.progress-bar-bg{flex:1;height:3px;background:var(--border);border-radius:2px}
+.progress-bar-fill{height:100%;background:var(--amber);border-radius:2px;transition:width 0.4s ease}
+.progress-text{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0.08em;white-space:nowrap}
+.section{padding:44px 0;border-bottom:1px solid var(--border)}
+.section-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.section-tag::before{content:'';width:20px;height:1px;background:var(--amber)}
+.section h2{font-size:clamp(20px,3vw,30px);color:var(--white);margin-bottom:8px}
+.section-desc{font-size:14px;color:var(--text-dim);margin-bottom:28px;line-height:1.7}
+.question-block{margin-bottom:24px;padding:22px 24px;border:1px solid var(--border);background:var(--surface);transition:border-color 0.2s}
+.question-block:focus-within{border-color:var(--amber-dim)}
+.question-label{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px;display:flex;align-items:flex-start;gap:10px}
+.question-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:0.08em;margin-top:2px;flex-shrink:0}
+.question-hint{font-size:12px;color:var(--text-faint);margin-bottom:14px;margin-left:30px;font-style:italic}
+.q-select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Lora',serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color 0.2s;-webkit-appearance:none;cursor:pointer}
+.q-select:focus{border-color:var(--amber)}
+.q-select option{background:var(--surface2);color:var(--text)}
+.checkbox-group{display:flex;flex-direction:column;gap:8px;margin-left:30px}
+.checkbox-item{display:flex;align-items:center;gap:10px;cursor:pointer}
+.checkbox-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--amber);cursor:pointer}
+.checkbox-item span{font-size:14px;color:var(--text-dim)}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--amber);color:var(--black);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:15px 28px;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.btn-primary:hover{background:var(--white);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border);color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;background:none;padding:15px 28px;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.btn-secondary:hover{border-color:var(--amber);color:var(--amber)}
+#score-section{display:none}
+.score-card{border:1px solid var(--border);background:var(--surface);padding:36px;text-align:center;margin-bottom:28px}
+.score-ring{width:130px;height:130px;margin:0 auto 18px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--amber)}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+.score-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--white);margin-bottom:10px}
+.score-desc{font-size:14px;color:var(--text-dim);max-width:480px;margin:0 auto}
+.insights-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:28px}
+.insight-card{border:1px solid var(--border);background:var(--surface);padding:18px}
+.insight-icon{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--amber);margin-bottom:8px}
+.insight-card h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px}
+.insight-card p{font-size:12px;color:var(--text-dim);line-height:1.6}
+.paywall{border:1px solid var(--amber-dim);background:rgba(212,160,23,0.04);padding:32px;text-align:center;margin-bottom:20px}
+.paywall h3{font-family:'Syne',sans-serif;font-size:20px;color:var(--white);margin-bottom:10px}
+.paywall p{font-size:14px;color:var(--text-dim);margin-bottom:20px;max-width:460px;margin-left:auto;margin-right:auto}
+.paywall-features{display:flex;flex-direction:column;gap:7px;margin-bottom:24px;text-align:left;max-width:380px;margin-left:auto;margin-right:auto}
+.paywall-feature{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-dim)}
+.paywall-feature::before{content:'→';color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px;flex-shrink:0;margin-top:2px}
+.price-tag{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--amber);margin-bottom:4px}
+.price-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:20px}
+#report-section{display:none}
+.report-header{background:var(--surface);border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.report-header h2{font-size:22px;color:var(--white);margin-bottom:6px}
+.report-meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0.06em}
+.report-body{font-size:15px;color:var(--text-dim);line-height:1.9}
+.report-body h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--white);margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.report-body h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--amber);margin:18px 0 7px}
+.report-body p{margin-bottom:12px}
+.report-body ul{margin:0 0 12px 20px}
+.report-body ul li{margin-bottom:5px}
+.report-body strong{color:var(--white);font-weight:500}
+.report-loading{text-align:center;padding:48px 20px}
+.report-loading p{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--amber);letter-spacing:0.08em;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.api-setup{border:1px solid var(--border);background:var(--surface);padding:22px;margin-bottom:20px;display:none}
+.api-setup p{font-size:13px;color:var(--text-dim);margin-bottom:10px}
+.api-setup a{color:var(--amber)}
+.api-input-row{display:flex;gap:10px}
+.api-input{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:11px 14px;outline:none;transition:border-color 0.2s}
+.api-input:focus{border-color:var(--amber)}
+.api-save{background:var(--amber);color:var(--black);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:11px 18px;cursor:pointer;white-space:nowrap}
+footer{padding:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-copy{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0.06em}
+@media(max-width:640px){.insights-grid{grid-template-columns:1fr}.hero-meta{gap:18px}.question-block{padding:16px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://usmannautomates.co.uk" class="nav-logo">UsmannAutomates</a>
+  <a href="https://usmannautomates.co.uk" class="nav-back">← Back to main site</a>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Free Audit Tool</div>
+    <h1>How much time is your business<br><em>wasting on manual work?</em></h1>
+    <p class="hero-sub">Answer 15 questions about how your business operates. Get a free automation score — and an optional full report showing exactly what to automate, which tools to use, and how much time you could save each week.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><div class="num">15</div><div class="lbl">Quick questions</div></div>
+      <div class="hero-meta-item"><div class="num">Free</div><div class="lbl">Automation score</div></div>
+      <div class="hero-meta-item"><div class="num">£39</div><div class="lbl">Full report</div></div>
+      <div class="hero-meta-item"><div class="num">UK</div><div class="lbl">SME focused</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+  <div class="container">
+    <div class="progress-inner">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-text" id="progress-text">0 / 15</div>
+    </div>
+  </div>
+</div>
+
+<div id="form-section">
+
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Section 1 of 5</div>
+      <h2>Your Business</h2>
+      <p class="section-desc">Tell us a bit about what you do and where you are.</p>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">01</span>What type of business do you run?</div>
+        <div class="question-hint">Pick the closest match</div>
+        <select class="q-select" id="q1" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="2">Professional services (accountancy, legal, consulting, HR)</option>
+          <option value="2">Agency or creative services (marketing, design, web)</option>
+          <option value="1">Trade or construction (plumbing, electrical, building)</option>
+          <option value="1">Retail (physical shop or online store)</option>
+          <option value="1">Health or wellness (clinic, therapy, fitness)</option>
+          <option value="2">Technology or software</option>
+          <option value="1">Food and hospitality</option>
+          <option value="1">Other service business</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">02</span>How many people work in your business?</div>
+        <div class="question-hint">Including yourself, full and part-time</div>
+        <select class="q-select" id="q2" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">Just me — sole trader or freelancer</option>
+          <option value="1">2 to 5 people</option>
+          <option value="2">6 to 15 people</option>
+          <option value="3">16 to 50 people</option>
+          <option value="3">More than 50 people</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">03</span>What is your approximate annual revenue?</div>
+        <div class="question-hint">A rough estimate is fine</div>
+        <select class="q-select" id="q3" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">Under £30,000</option>
+          <option value="1">£30,000 to £100,000</option>
+          <option value="2">£100,000 to £500,000</option>
+          <option value="3">Over £500,000</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Section 2 of 5</div>
+      <h2>Your Current Tools</h2>
+      <p class="section-desc">What software and systems are you currently using?</p>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">04</span>How do you manage your customer or client records?</div>
+        <div class="question-hint">Where does information about your clients actually live?</div>
+        <select class="q-select" id="q4" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">In my head or in emails</option>
+          <option value="0">Spreadsheets (Excel or Google Sheets)</option>
+          <option value="1">A basic free CRM (HubSpot free, Notion, Airtable)</option>
+          <option value="2">A paid CRM (Salesforce, Pipedrive, Zoho)</option>
+          <option value="3">A fully set up CRM with automation rules</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">05</span>How do you handle invoicing and getting paid?</div>
+        <div class="question-hint">From raising an invoice to money in the bank</div>
+        <select class="q-select" id="q5" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">Manually in Word or Excel, emailed as PDF</option>
+          <option value="1">Basic accounting software (FreeAgent, Wave)</option>
+          <option value="2">Full accounting software (Xero, QuickBooks)</option>
+          <option value="3">Accounting software with automated chasing and reconciliation</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">06</span>How do you manage projects and day-to-day tasks?</div>
+        <div class="question-hint">How does work get assigned, tracked, and completed?</div>
+        <select class="q-select" id="q6" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">By memory, sticky notes, or email</option>
+          <option value="0">Spreadsheets or a shared document</option>
+          <option value="1">A free tool (Trello, Asana free, Notion)</option>
+          <option value="2">A paid project management tool (Monday, ClickUp, Teamwork)</option>
+          <option value="3">A fully integrated system with automations and reporting</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Section 3 of 5</div>
+      <h2>Your Manual Work</h2>
+      <p class="section-desc">Where is time being spent on repetitive or manual tasks?</p>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">07</span>How many hours per week do you spend on admin tasks?</div>
+        <div class="question-hint">Emails, data entry, scheduling, reporting — anything that isn't the actual work</div>
+        <select class="q-select" id="q7" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">More than 15 hours — admin dominates my week</option>
+          <option value="1">10 to 15 hours — a significant chunk of my time</option>
+          <option value="2">5 to 10 hours — manageable but noticeable</option>
+          <option value="3">Under 5 hours — mostly under control</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">08</span>Which of these tasks take up the most of your time?</div>
+        <div class="question-hint">Select all that apply</div>
+        <div class="checkbox-group" id="q8">
+          <label class="checkbox-item"><input type="checkbox" value="emails" onchange="updateProgress()"><span>Answering and writing emails</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="invoicing" onchange="updateProgress()"><span>Invoicing and chasing payments</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="scheduling" onchange="updateProgress()"><span>Booking meetings and scheduling</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="reporting" onchange="updateProgress()"><span>Creating reports and updating spreadsheets</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="dataentry" onchange="updateProgress()"><span>Data entry and copying information between systems</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="followup" onchange="updateProgress()"><span>Following up with clients or leads</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="social" onchange="updateProgress()"><span>Social media and content posting</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="onboarding" onchange="updateProgress()"><span>Client or customer onboarding</span></label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">09</span>Do you have written processes for how your business operates?</div>
+        <div class="question-hint">SOPs, checklists, or documented workflows</div>
+        <select class="q-select" id="q9" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">No — most things are in my head</option>
+          <option value="0">A few notes but nothing consistent</option>
+          <option value="1">Some processes documented, most are not</option>
+          <option value="2">Most key processes are documented</option>
+          <option value="3">Fully documented with regular review</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Section 4 of 5</div>
+      <h2>Communication and Follow-Up</h2>
+      <p class="section-desc">How do you communicate with clients and leads?</p>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">10</span>How do you follow up with new enquiries or leads?</div>
+        <div class="question-hint">After someone contacts you or shows interest</div>
+        <select class="q-select" id="q10" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">We do not have a system — it is ad hoc</option>
+          <option value="0">I try to remember but things slip through</option>
+          <option value="1">I have a rough process but it is manual each time</option>
+          <option value="2">Templates and a checklist, but still manual</option>
+          <option value="3">Automated follow-up sequences in place</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">11</span>How do you send proposals or quotes to potential clients?</div>
+        <div class="question-hint">The process from request to sending</div>
+        <select class="q-select" id="q11" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">Written manually from scratch each time</option>
+          <option value="1">A Word or Google Docs template I edit</option>
+          <option value="2">Proposal software (PandaDoc, Better Proposals, Qwilr)</option>
+          <option value="3">Automated proposal generation linked to CRM</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">12</span>How do you onboard a new client once they have said yes?</div>
+        <div class="question-hint">The steps between winning work and starting delivery</div>
+        <select class="q-select" id="q12" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">Different every time — no set process</option>
+          <option value="1">A rough checklist in my head</option>
+          <option value="2">A written checklist or process I follow</option>
+          <option value="3">A documented and partly automated onboarding flow</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Section 5 of 5</div>
+      <h2>Data and Technology</h2>
+      <p class="section-desc">How you track performance and how open you are to new tools.</p>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">13</span>How do you track how your business is performing?</div>
+        <div class="question-hint">Revenue, profit, pipeline, key metrics</div>
+        <select class="q-select" id="q13" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">I do not — I have a rough sense but no tracking</option>
+          <option value="1">Spreadsheets updated manually when I remember</option>
+          <option value="2">Accounting software reports (monthly)</option>
+          <option value="3">A dashboard or BI tool with regular review</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">14</span>Do you know which clients or services are most profitable?</div>
+        <div class="question-hint">Not just which make the most revenue — which make the most profit</div>
+        <select class="q-select" id="q14" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="0">No idea — I would have to guess</option>
+          <option value="0">I have a rough sense but no data to back it up</option>
+          <option value="1">I have some data but it is incomplete</option>
+          <option value="2">I know fairly clearly from my accounts</option>
+          <option value="3">I have clear profitability analysis by client and service</option>
+        </select>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">15</span>How comfortable are you with learning new software tools?</div>
+        <div class="question-hint">Be honest — there are no wrong answers</div>
+        <select class="q-select" id="q15" onchange="updateProgress()">
+          <option value="">Select an option</option>
+          <option value="3">Very comfortable — I enjoy finding new tools</option>
+          <option value="2">Fairly comfortable — I will try things if they seem useful</option>
+          <option value="1">Somewhat hesitant — I prefer familiar tools</option>
+          <option value="0">I avoid new technology where possible</option>
+        </select>
+      </div>
+
+      <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+        <button class="btn-primary" id="score-btn" onclick="generateScore()" disabled>
+          Get My Automation Score
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+        </button>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0.06em">Free — no email required</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="score-section">
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Your Results</div>
+      <h2>Your Automation Score</h2>
+      <p class="section-desc">Based on your 15 answers, here is where your business stands.</p>
+
+      <div class="score-card">
+        <div class="score-ring">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="54" fill="none" stroke="#2a2a27" stroke-width="9"/>
+            <circle cx="65" cy="65" r="54" fill="none" stroke="#d4a017" stroke-width="9" stroke-linecap="round"
+              id="score-circle" stroke-dasharray="339.3" stroke-dashoffset="339.3"/>
+          </svg>
+          <div class="score-num" id="score-num">0%</div>
+        </div>
+        <div class="score-label">Automation Readiness Score</div>
+        <div class="score-title" id="score-title">Calculating...</div>
+        <div class="score-desc" id="score-desc"></div>
+      </div>
+
+      <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--white);margin-bottom:14px">Your top 3 quick wins</h3>
+      <div class="insights-grid" id="insights-grid"></div>
+
+      <div class="paywall">
+        <h3>Want your full personalised report?</h3>
+        <p>Your free score shows where you stand. The full report tells you exactly what to do about it — specific tools, step-by-step actions, and a realistic implementation roadmap built around your business.</p>
+        <div class="paywall-features">
+          <div class="paywall-feature">Full analysis of every automation opportunity in your answers</div>
+          <div class="paywall-feature">Specific UK-relevant tool recommendations with GBP pricing</div>
+          <div class="paywall-feature">Estimated hours saved per week for each recommendation</div>
+          <div class="paywall-feature">A prioritised 90-day implementation roadmap</div>
+          <div class="paywall-feature">GDPR and UK compliance notes for any tools recommended</div>
+        </div>
+        <div class="price-tag">£39</div>
+        <div class="price-sub">One-time payment — instant report</div>
+        <a href="https://usmannautomates.gumroad.com/l/phesm" target="_blank" class="btn-primary" onclick="saveAnswersBeforePayment()">
+          Get Full Report — £39
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+        </a>
+        <p style="font-size:12px;color:var(--text-faint);margin-top:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em">After payment, return to this page and click below.</p>
+        <div style="margin-top:16px">
+          <button class="btn-secondary" onclick="showReportSection()">I have paid — generate my full report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="report-section">
+  <div class="section">
+    <div class="container">
+      <div class="section-tag">Full Report</div>
+
+      <div class="api-setup" id="api-setup">
+        <p>To generate your report this tool uses the Anthropic Claude API. Enter your API key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. It is stored only in your browser.</p>
+        <div class="api-input-row">
+          <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-...">
+          <button class="api-save" onclick="saveApiKey()">Save and Generate</button>
+        </div>
+      </div>
+
+      <div id="report-output">
+        <div class="report-loading" id="report-loading" style="display:none"><p>Generating your personalised automation report...</p></div>
+        <div id="report-content"></div>
+      </div>
+
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+        <p style="font-size:12px;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em">Report prepared by UsmannAutomates · usmannautomates.co.uk · Not legal or financial advice</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-copy">2026 UsmannAutomates · usmannautomates.co.uk</span>
+  <span class="footer-copy">UK SME Automation Audit · Free Tool</span>
+</footer>
+
+<script>
+function updateProgress(){
+  const ids=['q1','q2','q3','q4','q5','q6','q7','q9','q10','q11','q12','q13','q14','q15'];
+  let answered=0;
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value!=='')answered++;});
+  const q8=document.querySelectorAll('#q8 input:checked');
+  if(q8.length>0)answered++;
+  const pct=Math.round((answered/15)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=answered+' / 15';
+  document.getElementById('progress-wrap').style.display='block';
+  document.getElementById('score-btn').disabled=answered<14;
+}
+
+function getAnswers(){
+  const ids=['q1','q2','q3','q4','q5','q6','q7','q9','q10','q11','q12','q13','q14','q15'];
+  const a={};
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    a[id]=el?el.value:'';
+    a[id+'_text']=el&&el.selectedIndex>0?el.options[el.selectedIndex].text:'';
+  });
+  a.q8=Array.from(document.querySelectorAll('#q8 input:checked')).map(cb=>cb.value);
+  return a;
+}
+
+function calculateScore(){
+  const ids=['q1','q2','q3','q4','q5','q6','q7','q9','q10','q11','q12','q13','q14','q15'];
+  let total=0,maxP=0;
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.value!==''){
+      total+=parseInt(el.value)||0;
+      const opts=Array.from(el.options).filter(o=>o.value!=='');
+      maxP+=Math.max(...opts.map(o=>parseInt(o.value)||0));
+    }
+  });
+  return maxP>0?Math.round((total/maxP)*100):0;
+}
+
+function getQuickWins(a){
+  const wins=[];
+  if(parseInt(a.q4||0)<1)wins.push({icon:'◈',title:'CRM and client records',text:'Moving from spreadsheets to a free CRM (HubSpot free tier) could save 2-4 hours per week and eliminate lost client information.'});
+  if(parseInt(a.q5||0)<2)wins.push({icon:'∑',title:'Invoice automation',text:'Automated invoicing and payment chasing in Xero or FreeAgent typically recovers 2-3 hours per week and reduces late payments by 40%.'});
+  if(parseInt(a.q10||0)<2)wins.push({icon:'⌁',title:'Lead follow-up sequences',text:'An automated email follow-up sequence means no enquiry falls through the cracks. Most businesses double their response rates within 30 days.'});
+  if(parseInt(a.q7||0)===0)wins.push({icon:'◎',title:'Admin time recovery',text:'You are spending 10+ hours on admin. Targeted automation of your top 3 tasks could recover 6-8 of those hours every week.'});
+  if(parseInt(a.q12||0)<2)wins.push({icon:'→',title:'Client onboarding process',text:'A standardised onboarding flow reduces time from yes to started and creates a professional first impression every time.'});
+  if(parseInt(a.q13||0)<2)wins.push({icon:'∞',title:'Performance dashboard',text:'A simple automated dashboard in Google Looker Studio could give you real-time business numbers without any manual work.'});
+  if(a.q8&&a.q8.includes('scheduling'))wins.push({icon:'◉',title:'Meeting booking automation',text:'A Calendly or TidyCal link eliminates all back-and-forth scheduling emails — typically saves 3-5 hours per week.'});
+  if(a.q8&&a.q8.includes('social'))wins.push({icon:'◆',title:'Social media scheduling',text:'Buffer or Later can automate a week of social posts in 30 minutes, replacing daily manual posting.'});
+  return wins.slice(0,3);
+}
+
+function generateScore(){
+  const score=calculateScore();
+  const answers=getAnswers();
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('score-section').style.display='block';
+  document.getElementById('progress-wrap').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  const circ=339.3;
+  const offset=circ-(score/100)*circ;
+  setTimeout(()=>{
+    const c=document.getElementById('score-circle');
+    c.style.transition='stroke-dashoffset 1.5s ease';
+    c.style.strokeDashoffset=offset;
+    document.getElementById('score-num').textContent=score+'%';
+  },200);
+  let title,desc;
+  if(score<25){title='Significant automation potential';desc='Your business has substantial room to automate. The gains available are large and most can be implemented quickly and affordably.';}
+  else if(score<50){title='Developing — clear gaps remain';desc='You have some tools in place but key processes are still manual. Targeted automation of your top pain points could recover 8-12 hours per week.';}
+  else if(score<75){title='Solid — refinement will drive real gains';desc='You are ahead of most UK SMEs. The opportunity now is connecting your existing tools and plugging the remaining manual gaps.';}
+  else{title='Well optimised — focus on advanced gains';desc='Your business is well automated. The next step is connecting systems for end-to-end visibility and exploring AI-powered workflows.';}
+  document.getElementById('score-title').textContent=title;
+  document.getElementById('score-desc').textContent=desc;
+  const wins=getQuickWins(answers);
+  const grid=document.getElementById('insights-grid');
+  grid.innerHTML='';
+  wins.forEach(w=>{
+    const card=document.createElement('div');
+    card.className='insight-card';
+    card.innerHTML='<div class="insight-icon">'+w.icon+'</div><h4>'+w.title+'</h4><p>'+w.text+'</p>';
+    grid.appendChild(card);
+  });
+  sessionStorage.setItem('audit_answers',JSON.stringify(answers));
+  sessionStorage.setItem('audit_score',score);
+}
+
+function saveAnswersBeforePayment(){
+  sessionStorage.setItem('audit_answers',JSON.stringify(getAnswers()));
+  sessionStorage.setItem('audit_score',calculateScore());
+}
+
+function showReportSection(){
+  document.getElementById('score-section').style.display='none';
+  document.getElementById('report-section').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(!localStorage.getItem('audit_api_key')){
+    document.getElementById('api-setup').style.display='block';
+  }else{
+    generateFullReport();
+  }
+}
+
+function saveApiKey(){
+  const key=document.getElementById('api-key-input').value.trim();
+  if(!key.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key starting with sk-ant-');return;}
+  localStorage.setItem('audit_api_key',key);
+  document.getElementById('api-setup').style.display='none';
+  generateFullReport();
+}
+
+async function generateFullReport(){
+  const apiKey=localStorage.getItem('audit_api_key');
+  if(!apiKey){document.getElementById('api-setup').style.display='block';return;}
+  const raw=sessionStorage.getItem('audit_answers');
+  const score=sessionStorage.getItem('audit_score')||'?';
+  if(!raw){document.getElementById('report-content').innerHTML='<p style="color:var(--text-dim)">No answers found. Please complete the audit form first.</p>';return;}
+  const a=JSON.parse(raw);
+  document.getElementById('report-loading').style.display='block';
+  document.getElementById('report-content').innerHTML='';
+
+  const prompt=`You are UsmannAutomates, a UK business automation specialist. Write a personalised automation audit report for a UK small business owner based on their answers.
+
+BUSINESS PROFILE:
+- Type: ${a.q1_text||'Not specified'}
+- Team size: ${a.q2_text||'Not specified'}
+- Revenue: ${a.q3_text||'Not specified'}
+- Automation score: ${score}%
+
+CURRENT TOOLS:
+- Client records: ${a.q4_text||'Not specified'}
+- Invoicing: ${a.q5_text||'Not specified'}
+- Project management: ${a.q6_text||'Not specified'}
+
+MANUAL WORK:
+- Weekly admin hours: ${a.q7_text||'Not specified'}
+- Biggest time drains: ${Array.isArray(a.q8)?a.q8.join(', '):'None selected'}
+- Process documentation: ${a.q9_text||'Not specified'}
+
+COMMUNICATION:
+- Lead follow-up: ${a.q10_text||'Not specified'}
+- Proposals: ${a.q11_text||'Not specified'}
+- Onboarding: ${a.q12_text||'Not specified'}
+
+DATA AND PERFORMANCE:
+- Performance tracking: ${a.q13_text||'Not specified'}
+- Profitability visibility: ${a.q14_text||'Not specified'}
+- Tech comfort: ${a.q15_text||'Not specified'}
+
+Write a detailed personalised report with these sections:
+
+## Executive Summary
+2-3 paragraphs. Summarise their automation maturity, the biggest opportunities specific to their business type and size, and the overall value available.
+
+## Your Top 5 Automation Opportunities
+For each (numbered, ranked by impact):
+### [Opportunity Name]
+Explain the current problem, what to automate, specific UK-relevant tool recommendations with GBP pricing, realistic hours saved per week, difficulty (Easy/Medium/Hard), and rough monthly cost.
+
+## Your 90-Day Implementation Roadmap
+### Month 1 — Quick Wins
+2-3 specific actions with exact tools to set up first.
+### Month 2 — Core Automation
+2-3 actions building on Month 1.
+### Month 3 — Advanced Optimisation
+2-3 actions for connecting systems.
+
+## Recommended Tool Stack
+Grouped by category (CRM, Invoicing, Projects, Communication, Reporting). For each: tool name, monthly cost in GBP, why it fits their specific situation.
+
+## UK Compliance Notes
+Practical GDPR and ICO considerations for the recommended tools. Keep it specific and actionable.
+
+## Return on Investment Estimate
+Calculate: estimated weekly hours currently lost, hours saved after recommendations, annual value at £25/hour, approximate tool costs per month, net annual benefit.
+
+Write in plain direct English. No jargon. No filler. Be specific to their business type and size throughout. Reference their actual answers where relevant.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error');}
+    const data=await res.json();
+    const text=data.content[0].text;
+    document.getElementById('report-loading').style.display='none';
+    const hdr=document.createElement('div');
+    hdr.className='report-header';
+    hdr.innerHTML='<h2>Your Personalised Automation Report</h2><p class="report-meta">Score: '+score+'% &middot; '+a.q1_text+' &middot; '+a.q2_text+' &middot; Generated by UsmannAutomates</p>';
+    document.getElementById('report-content').appendChild(hdr);
+    const body=document.createElement('div');
+    body.className='report-body';
+    body.innerHTML=formatReport(text);
+    document.getElementById('report-content').appendChild(body);
+    const cta=document.createElement('div');
+    cta.style.cssText='margin-top:28px;padding:22px;border:1px solid var(--border);background:var(--surface)';
+    cta.innerHTML='<p style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">Want help implementing this?</p><p style="font-size:14px;color:var(--text-dim);margin-bottom:14px">Usmann Asghar at UsmannAutomates helps UK small businesses implement exactly these automations.</p><a href="https://usmannautomates.co.uk#contact" style="display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:var(--black);font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:13px 22px">Get in Touch →</a>';
+    document.getElementById('report-content').appendChild(cta);
+  }catch(err){
+    document.getElementById('report-loading').style.display='none';
+    document.getElementById('report-content').innerHTML='<div style="padding:22px;border:1px solid var(--border);background:var(--surface)"><p style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#e24b4a;margin-bottom:8px">Error generating report</p><p style="font-size:14px;color:var(--text-dim)">'+err.message+'</p><button onclick="generateFullReport()" style="margin-top:14px;background:var(--amber);color:var(--black);font-family:\'IBM Plex Mono\',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:12px 18px;cursor:pointer">Try Again</button></div>';
+  }
+}
+
+function formatReport(t){
+  return t
+    .replace(/^## (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^### (.+)$/gm,'<h4>$1</h4>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^[-*] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
+    .replace(/\n\n+/g,'</p><p>')
+    .replace(/^(?!<[hup\/])/gm,'')
+    .replace(/<p>\s*<\/p>/g,'')
+    .replace(/<p>(<[hu])/g,'$1')
+    .replace(/(<\/[hu][^>]*>)\s*<\/p>/g,'$1');
+}
+
+window.addEventListener('load',()=>{
+  if(new URLSearchParams(window.location.search).get('paid')==='true'&&sessionStorage.getItem('audit_answers')){
+    document.getElementById('form-section').style.display='none';
+    const a=JSON.parse(sessionStorage.getItem('audit_answers'));
+    document.getElementById('score-section').style.display='block';
+    showReportSection();
+  }
+});
+</script>
+</body>
+</html>
